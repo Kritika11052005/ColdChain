@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Terminal as TerminalIcon, Cpu, Loader2, Sparkles, CheckCircle2, ChevronRight, Play } from "lucide-react";
 import Link from "next/link";
@@ -25,7 +25,7 @@ interface RunStats {
   error_message?: string | null;
 }
 
-export default function PipelinePage() {
+function PipelineContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const runId = searchParams.get("run_id");
@@ -346,5 +346,18 @@ export default function PipelinePage() {
         Automatic redirection triggers when stages 1-3 complete.
       </footer>
     </div>
+  );
+}
+
+export default function PipelinePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#040810] flex flex-col items-center justify-center font-mono text-sm text-[#6B9AC4] space-y-4">
+        <Loader2 className="w-6 h-6 animate-spin text-[#B91C35]" />
+        <span>Initializing pipeline console...</span>
+      </div>
+    }>
+      <PipelineContent />
+    </Suspense>
   );
 }

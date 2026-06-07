@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ArrowLeft, Check, X, ShieldCheck, Mail, Send, Award, Filter, RefreshCw, Loader2, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
@@ -19,7 +19,7 @@ interface Contact {
   included: boolean;
 }
 
-export default function ReviewPage() {
+function ReviewContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const runId = searchParams.get("run_id");
@@ -625,5 +625,18 @@ export default function ReviewPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ReviewPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#040810] flex flex-col items-center justify-center font-mono text-sm text-[#6B9AC4] space-y-4">
+        <Loader2 className="w-6 h-6 animate-spin text-[#B91C35]" />
+        <span>Initializing review page...</span>
+      </div>
+    }>
+      <ReviewContent />
+    </Suspense>
   );
 }

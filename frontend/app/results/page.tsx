@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2, ChevronRight, Clock, Award, Users, Mail, Building2, Play, Home } from "lucide-react";
 import Link from "next/link";
@@ -19,7 +19,7 @@ interface RunStats {
   emails_failed: number;
 }
 
-export default function ResultsPage() {
+function ResultsContent() {
   const searchParams = useSearchParams();
   const runId = searchParams.get("run_id");
 
@@ -240,5 +240,18 @@ export default function ResultsPage() {
         ColdChain Outreach Automation Engine.
       </footer>
     </div>
+  );
+}
+
+export default function ResultsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#040810] flex flex-col items-center justify-center font-mono text-sm text-[#6B9AC4] space-y-4">
+        <div className="w-6 h-6 rounded-full border-2 border-t-[#B91C35] border-[#B91C35]/20 animate-spin" />
+        <span>Loading campaign results...</span>
+      </div>
+    }>
+      <ResultsContent />
+    </Suspense>
   );
 }
