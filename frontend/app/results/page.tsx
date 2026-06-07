@@ -32,7 +32,8 @@ export default function ResultsPage() {
     if (!runId) return;
     async function fetchStats() {
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/history/${runId}/stats`);
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+        const res = await fetch(`${apiBaseUrl}/api/history/${runId}/stats`);
         if (res.ok) {
           const data = await res.json();
           setStats(data);

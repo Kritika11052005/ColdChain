@@ -29,11 +29,13 @@ export default function PipelinePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const runId = searchParams.get("run_id");
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const wsBaseUrl = apiBaseUrl.replace(/^http/, "ws");
 
   const [logs, setLogs] = useState<LogMessage[]>([]);
   const [stats, setStats] = useState<RunStats | null>(null);
   const [error, setError] = useState<string | null>(null);
-  
+
   const terminalEndRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
 
@@ -43,11 +45,11 @@ export default function PipelinePage() {
 
     const fetchStats = async () => {
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/history/${runId}/stats`);
+        const res = await fetch(`${apiBaseUrl}/api/history/${runId}/stats`);
         if (res.ok) {
           const data = await res.json();
           setStats(data);
-          
+
           // If pipeline is in REVIEWING, redirect to the review page
           if (data.status === "REVIEWING") {
             setTimeout(() => {
@@ -68,11 +70,12 @@ export default function PipelinePage() {
   // WebSocket connection for real-time logs
   useEffect(() => {
     if (!runId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setError("No pipeline Run ID specified.");
       return;
     }
 
-    const ws = new WebSocket(`ws://127.0.0.1:8000/ws/pipeline/${runId}`);
+    const ws = new WebSocket(`${wsBaseUrl}/ws/pipeline/${runId}`);
     wsRef.current = ws;
 
     ws.onmessage = (event) => {
@@ -95,7 +98,7 @@ export default function PipelinePage() {
     // If WebSocket fails, poll logs manually
     const pollLogs = async () => {
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/history/${runId}/logs`);
+        const res = await fetch(`${apiBaseUrl}/api/history/${runId}/logs`);
         if (res.ok) {
           const data = await res.json();
           setLogs(data);
@@ -140,10 +143,10 @@ export default function PipelinePage() {
   const getStageNodeStatus = (stageNum: number) => {
     if (!stats) return "pending";
     const status = stats.status.toUpperCase();
-    
+
     if (status === "ERROR") return "error";
     if (status === "COMPLETE") return "completed";
-    
+
     if (stageNum === 1) {
       if (stats.companies_found > 0) return "completed";
       if (status === "RUNNING") return "active";
@@ -156,7 +159,7 @@ export default function PipelinePage() {
       if (status === "REVIEWING") return "completed";
       if (stats.prospects_found > 0 && status === "RUNNING") return "active";
     }
-    
+
     return "pending";
   };
 
@@ -198,7 +201,7 @@ export default function PipelinePage() {
           <span>Pipeline ID:</span>
           <span className="text-[#F5E6CA] font-bold">{runId?.split("-")[0]}...</span>
         </div>
-        
+
         {stats && (
           <div className="flex items-center space-x-2 px-3 py-1 rounded glass-navy font-mono text-xs text-[#6B9AC4]">
             <span>Domain:</span>
@@ -219,7 +222,7 @@ export default function PipelinePage() {
 
       {/* ── Main Execution View ── */}
       <main className="flex-grow max-w-6xl mx-auto px-6 py-6 z-10 w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-        
+
         {/* Left column: Stage Indicators and Stats */}
         <div className="lg:col-span-4 flex flex-col space-y-6 anim-fade-up-d1">
           <div className="p-6 rounded-2xl glass-navy space-y-6">
@@ -327,7 +330,7 @@ export default function PipelinePage() {
               )}
               <div ref={terminalEndRef} />
             </div>
-            
+
             {/* Terminal Footer */}
             <div className="px-4 py-2.5 bg-[#060A12] border-t border-[#6B9AC4]/10 flex justify-between items-center text-[10px] font-mono text-[#6B9AC4]/30">
               <span>Ctrl+C to Terminate Run</span>

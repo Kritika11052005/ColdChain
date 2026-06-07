@@ -30,6 +30,8 @@ export default function ReviewPage() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [scoreFilter, setScoreFilter] = useState(65);
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+  const wsBaseUrl = apiBaseUrl.replace(/^http/, "ws");
 
   const [showOverlay, setShowOverlay] = useState(false);
   const [deploymentStatus, setDeploymentStatus] = useState<Record<string, 'queued' | 'sending' | 'sent' | 'failed'>>({});
@@ -41,7 +43,7 @@ export default function ReviewPage() {
 
     async function fetchContacts() {
       try {
-        const res = await fetch(`http://127.0.0.1:8000/api/pipeline/${runId}/contacts`);
+        const res = await fetch(`${apiBaseUrl}/api/pipeline/${runId}/contacts`);
         if (res.ok) {
           const data = await res.json();
           const updatedContacts = data.contacts.map((c: Contact) => ({
@@ -104,7 +106,7 @@ export default function ReviewPage() {
     // Establish WebSocket connection for real-time Stage 4 logs
     let ws: WebSocket | null = null;
     try {
-      ws = new WebSocket(`ws://127.0.0.1:8000/ws/pipeline/${runId}`);
+      ws = new WebSocket(`${wsBaseUrl}/ws/pipeline/${runId}`);
 
       ws.onmessage = (event) => {
         try {
@@ -158,7 +160,7 @@ export default function ReviewPage() {
     }
 
     try {
-      const res = await fetch(`http://127.0.0.1:8000/api/pipeline/${runId}/send`, {
+      const res = await fetch(`${apiBaseUrl}/api/pipeline/${runId}/send`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -180,7 +182,7 @@ export default function ReviewPage() {
       // Start polling status
       const interval = setInterval(async () => {
         try {
-          const statsRes = await fetch(`http://127.0.0.1:8000/api/history/${runId}/stats`);
+          const statsRes = await fetch(`${apiBaseUrl}/api/history/${runId}/stats`);
           if (statsRes.ok) {
             const statsData = await statsRes.json();
 

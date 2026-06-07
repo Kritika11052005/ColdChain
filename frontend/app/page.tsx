@@ -23,7 +23,8 @@ export default function LandingPage() {
   useEffect(() => {
     async function fetchHistory() {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/history");
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+        const response = await fetch(`${apiBaseUrl}/api/history`);
         if (response.ok) {
           const data = await response.json();
           setHistory(data);
