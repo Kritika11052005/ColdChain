@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState, useRef } from "react";
@@ -28,7 +29,7 @@ export default function InputPage() {
       .replace(/^https?:\/\//, "")
       .replace(/^www\./, "")
       .split("/")[0];
-      
+
     const pattern = /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
     if (!pattern.test(clean)) {
       return null;
@@ -149,11 +150,10 @@ export default function InputPage() {
                     type="button"
                     onClick={() => handleChipClick(item.domain)}
                     disabled={loading}
-                    className={`px-3 py-1.5 rounded-lg border text-xs font-mono transition-all duration-200 ${
-                      domain === item.domain
+                    className={`px-3 py-1.5 rounded-lg border text-xs font-mono transition-all duration-200 ${domain === item.domain
                         ? "bg-[#B91C35]/15 border-[#B91C35]/50 text-[#F5E6CA]"
                         : "bg-[#060A12] border-[#6B9AC4]/12 text-[#6B9AC4] hover:border-[#6B9AC4]/30 hover:text-[#F5E6CA]"
-                    }`}
+                      }`}
                   >
                     {item.name}
                   </button>
