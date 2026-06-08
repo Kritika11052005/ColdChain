@@ -86,19 +86,23 @@ async def validate_env():
 
 ## 3. CORS Configuration
 
-Only localhost:3000 can call the FastAPI backend. No other origin accepted.
+Only allowed origins and Vercel deployments can call the FastAPI backend.
 
 ```python
 from fastapi.middleware.cors import CORSMiddleware
 
-allowed_origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
+allowed_origins = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001,https://cold-chain-xi.vercel.app"
+).split(",")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,       # ["http://localhost:3000"]
+    allow_origins=allowed_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
-    allow_methods=["GET", "POST"],        # only what's needed
-    allow_headers=["Content-Type"],
+    allow_methods=["*"],
+    allow_headers=["*"],
     max_age=3600,
 )
 ```
