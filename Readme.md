@@ -21,7 +21,7 @@
 
 <br/>
 
-> *Built as a take-home assignment for Vocallabs/Subspace SDE Intern — then shipped as a real product.*
+> *Built as a take-home assignment for Vocallabs/Subspace SDE Intern *
 
 </div>
 
@@ -343,7 +343,7 @@ This project was built as the take-home engineering assignment for **SDE Intern 
 
 **What was asked:** Build a CLI that goes from one domain to emails sent.
 
-**What was shipped:** A full-stack product with a cinematic web UI, AI competitor discovery, lead scoring, personalized email generation, live terminal streaming, and CAPTCHA protection.
+**What was developed* A full-stack product with a cinematic web UI, AI competitor discovery, lead scoring, personalized email generation, live terminal streaming, and CAPTCHA protection.
 
 ---
 
@@ -358,7 +358,7 @@ This project was built as the take-home engineering assignment for **SDE Intern 
 
 <div align="center">
 
-*Built with obsession, shipped in 48 hours.*
+*Built with obsession, developed in 48 hours.*
 
 **⭐ Star this repo if ColdChain impressed you**
 
