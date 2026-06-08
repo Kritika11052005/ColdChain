@@ -19,7 +19,7 @@ class RateLimiter:
 # Per-service rate limit instances
 RATE_LIMITS = {
     "tomba":   RateLimiter(calls_per_second=0.5),   # 1 call per 2s
-    "prospeo": RateLimiter(calls_per_second=1.0),   # 1 call per second
+    "prospeo": RateLimiter(calls_per_second=0.3),   # 1 call per ~3.33s (keeps under 20/min)
     "brevo":   RateLimiter(calls_per_second=2.0),   # 2 calls per second
     "gemini":  RateLimiter(calls_per_second=1.0),   # 1 call per second
     "serper":  RateLimiter(calls_per_second=2.0),   # 2 calls per second
